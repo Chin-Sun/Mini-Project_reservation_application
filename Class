@@ -1,0 +1,283 @@
+#定义类---代表businessman
+class Business:
+    def __init__(self, name, seats_number, regular_seats_price):
+        self.name = name
+        self.seats_number = seats_number
+        self.regular_seats_price = regular_seats_price
+        self.seats = {}
+        
+# 计算每个座位的价格
+def seat_price_caculation(self, row, column):
+    if row == 0: # first row
+        first_row = regular_seats_price * 1.1
+    elif row == seats_number - 1: # last row
+        last_row = regular_seats_price * 0.75
+    elif column == seats_number//2 - 1 or column == seats_number//2: # middle columns
+        middle_columns = regular_seats_price * 1.25
+    else: # remaining seats
+        remaining_seats = regular_seats_price
+    return seat_price
+    
+# 给room创建一个2D list，每个座位有自己的价格
+def room_settings(self, seats_number, regular_seats_price):
+    room = [[0 for x in range(seats_number)] for y in range(seats_number)]
+    
+    # Loop through the room and assign the costs to each zone
+    for i in range(seats_number):
+        for j in range(seats_number):
+            if i == 0:
+                room[i][j] = first_row
+            elif i == room_size - 1:
+                room[i][j] = last_row
+            elif j == room_size // 2 - 1 or j == room_size // 2:
+                room[i][j] = middle_columns
+            else:
+                room[i][j] = remaining_seats
+    
+    return room
+
+# 举例:
+#
+#room = room_settings(5, 100)
+#for row in room:
+#   print(row)
+------Seat_price()
+
+# 举例
+#seat_price = seat_price_caculation(0,0) # first row, first column
+#print(seat_price) # 11.0
+#seat_price = seat_price_caculation(9,9) # last row, last column
+#print(seat_price) # 7.5
+
+#定义类--代表seat信息
+class Seat:
+    def __init__(self, seat_id, business_type, seat_number, cost, discount_ratio):
+        self.seat_id = seat_id
+        self.business_type = business_type
+        self.seat_number = seat_number
+        self.cost = cost
+        self.discount_ratio = discount_ratio
+        self.is_available = True
+        self.booked = False
+        self.booked_by = None
+        self.date = None
+        self.time = None
+        
+    def book(self, user, date, time):
+        # Code to book a seat
+        if not self.booked:
+            self.booked = True
+            self.booked_by = user.username
+            self.date = date
+            self.time = time
+        else:
+            print("Seat is already booked")
+            
+    def mark_as_unavailable(self):
+        self.is_available = False
+        
+        
+#定义类---代表User            
+class User:
+    def __init__(self, username, password, notification_service):
+        self.username = username
+        self.password = password
+        self.booked_seats = []
+        self.sold_seats = []
+        self.received_complaints = []
+        self.notification_service = notification_service
+        self.notification_service.subscribe(self)
+
+    def notify(self, seat):
+        print("User received notification:", seat)
+        
+    def book_seat(self, service, seat_id, date, time):
+        if self.can_book_seat(service, seat_id, date, time):
+            self.booked_seats.append({"service": service, "seat_id": seat_id, "date": date, "time": time})
+            return True
+        return False
+        
+    def can_book_seat(self, service, seat_id, date, time):
+        for booked_seat in self.booked_seats:
+            if booked_seat["service"] == service and booked_seat["seat_id"] == seat_id and booked_seat["date"] == date and booked_seat["time"] == time:
+                return False
+        return True
+    
+    def change_booking(self, service, seat_id, new_date, new_time):
+        for booked_seat in self.booked_seats:
+            if booked_seat["service"] == service and booked_seat["seat_id"] == seat_id:
+                booked_seat["date"] = new_date
+                booked_seat["time"] = new_time
+                return True
+        return False
+    
+    def cancel_booking(self, service, seat_id):
+        for booked_seat in self.booked_seats:
+            if booked_seat["service"] == service and booked_seat["seat_id"] == seat_id:
+                self.booked_seats.remove(booked_seat)
+                return True
+        return False
+    
+    def sell_seat(self, service, seat_id, cost, discount_ratio):
+        for booked_seat in self.booked_seats:
+            if booked_seat["service"] == service and booked_seat["seat_id"] == seat_id:
+                self.sold_seats.append({"service": service, "seat_id": seat_id, "cost": cost, "discount_ratio": discount_ratio})
+                return True
+        return False
+    
+    def list_available_seats(self, service):
+        available_seats = []
+        for seat in BusinessOwner.seats[service]:
+            is_available = True
+            for booked_seat in self.booked_seats:
+                if booked_seat["service"] == service and booked_seat["seat_id"] == seat["seat_id"]:
+                    is_available = False
+                    break
+            if is_available:
+                available_seats.append(seat)
+        return available_seats
+    
+    def bargain_for_price(self, service, seat_id, new_price):
+        for sold_seat in self.sold_seats:
+            if sold_seat["service"] == service and sold_seat["seat_id"] == seat_id:
+                sold_seat["cost"] = new_price
+                return True
+        return False
+    
+    def send_complaint(self, message):
+        # send the complaint message to the administrator
+        admin_email = "admin@your-system.com"
+        subject = "Complaint from User: {}".format(self.username)
+        email_message = "Subject: {}\n\n{}".format(subject, message)
+        send_email(admin_email, email_message)
+
+def send_email(to, message):
+    # implement the email sending functionality here；
+    #The function send_email could use a library such as smtplib or a service such as sendgrid.
+    pass
+
+
+#定义类---座位预约系统
+#has properties for lists of direct owners and resellers, and methods for registering direct owners and resellers and listing available seats.
+
+class SeatReservationSystem:
+    def __init__(self, notification_service):
+        self.direct_owners = []
+        self.resellers = []
+        self.notification_service = notification_service
+        self.seats = []
+       # self.sell_list = []
+    
+    def register_direct_owner(self, user):
+        self.direct_owners.append(user)
+    
+    def register_reseller(self, user):
+        self.resellers.append(user)
+    
+    def add_seat(self, seat):
+        self.seats.append(seat)
+        self.notification_service.notify_all(seat)
+    
+    def list_available_seats(self):
+        available_seats = []
+        for direct_owner in self.direct_owners:
+            for seat in direct_owner.seats:
+                if seat.is_available:
+                    available_seats.append(seat)
+        for reseller in self.resellers:
+            for seat in reseller.seats:
+                if seat.is_available:
+                    available_seats.append(seat)
+        return available_seats  
+        
+        #The list_available_seats method iterates over all the direct owners and resellers, and adds any available seats to the available_seats list. The method returns the available_seats list at the end.
+
+
+
+#定义类----通知User，有空余座位;acts as a message broker.
+
+class NotificationService:
+    def __init__(self):
+        self.subscribers = []
+
+    def subscribe(self, subscriber):
+        self.subscribers.append(subscriber)
+
+    def notify_all(self, seat):
+        for subscriber in self.subscribers:
+            subscriber.notify(seat)
+            
+#定义类----代表Admin
+class Admin:
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    # Method to manage service and user access; In this implementation, the SystemAdministrator class has two instance variables: services and users. 
+    #services is a dictionary where each key is a service name, and each value is a dictionary that contains the users who are allowed to access the service. 
+    #The manage_service_access method takes in three arguments: service, user, and action. If the action is "grant", the method appends the user to the list of allowed users for the service. 
+    #If the action is "revoke", the method removes the user from the list of allowed users. If the action is "add_service", the method creates a new service with an empty list of allowed users.
+    #If the action is "remove_service", the method removes the service from the services dictionary.
+    
+     def manage_service_access(self, service, user, action):
+        if action == "grant":
+            self.services[service]["allowed_users"].append(user)
+        elif action == "revoke":
+            self.services[service]["allowed_users"].remove(user)
+        elif action == "add_service":
+            self.services[service] = {"allowed_users": []}
+        elif action == "remove_service":
+            del self.services[service]
+            
+    #收到用户的抱怨  
+    def receive_complaint(self, user,complaint_message):
+        # Code to receive and handle a complaint from a user
+        # This could involve logging the complaint, sending a response to the user, etc.
+        self.complaints.append((user, complaint_message))
+        print("Received complaint: ", complaint_message)
+        
+        
+#######################################################################################################        
+        
+        # 定义类---代表User
+class User:
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+        self.booked_seats = {}
+
+    # Method to book a seat
+    def book_seat(self, seat_id, date, time, business):
+        if seat_id not in business.seats:
+            self.booked_seats[seat_id] = (date, time)
+            business.seats[seat_id] = self
+            print(f"{self.username} has successfully booked seat {seat_id} at {business.name} for {date} at {time}.")
+        else:
+            print(f"Seat {seat_id} is already taken.")
+
+    # Method to change a booking
+    def change_booking(self, seat_id, date, time, business):
+        if seat_id in self.booked_seats:
+            self.booked_seats[seat_id] = (date, time)
+            print(f"{self.username} has successfully changed booking for seat {seat_id} at {business.name} to {date} at {time}.")
+        else:
+            print(f"{self.username} does not have a booking for seat {seat_id}.")
+
+    # Method to cancel a booking
+    def cancel_booking(self, seat_id, business):
+        if seat_id in self.booked_seats:
+            del self.booked_seats[seat_id]
+            del business.seats[seat_id]
+            print(f"{self.username} has successfully cancelled booking for seat {seat_id} at {business.name}.")
+        else:
+            print(f"{self.username} does not have a booking for seat {seat_id}.")
+
+    # Method to resell a seat
+    def resell_seat(self, seat_id, business, cost, discount_ratio):
+        if seat_id in self.booked_seats:
+            del self.booked_seats[seat_id]
+            business.seats[seat_id] = self
+            self.booked_seats[seat_id] = (cost, discount_ratio)
+            print(f"{self.username} has successfully resold seat {seat_id} at {business.name} for ${cost} with a discount ratio of {discount_ratio}.")
+        else:
+            print(f"{self.username} does not have a booking for seat {seat_id}.")
